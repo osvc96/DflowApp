@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
+import android.content.Intent;
 import android.os.Bundle;
 
 import ai.api.AIListener;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements AIListener, OnIni
     private AIService aiService;
     private AIDataService aiDataService;
     private AIError aiError;
+    private Button loadOfficeMain;
 
     private TextToSpeech tts;
 
@@ -52,6 +54,9 @@ public class MainActivity extends AppCompatActivity implements AIListener, OnIni
         setContentView(R.layout.activity_main);
 
         editText = (EditText) findViewById(R.id.editText);
+        listenButton = (Button) findViewById(R.id.listenButton);
+        readButton = (Button) findViewById(R.id.readButton);
+        loadOfficeMain = (Button) findViewById(R.id.officeMain);
         resultTextView = (TextView) findViewById(R.id.resultTextView);
 
         validateRecordingPermission();
@@ -98,6 +103,14 @@ public class MainActivity extends AppCompatActivity implements AIListener, OnIni
             }
         }
     };
+    public void officeMainButtonOnClick(final View view){
+        Intent myIntent = new Intent(MainActivity.this, OfficeLoad.class);
+        MainActivity.this.startActivity(myIntent);
+    }
+
+    public void voiceButtonOnClick(final View view){
+        aiService.startListening();
+    }
 
     public void textButtonOnClick(final View view) {
         final AIRequest aiRequest = new AIRequest();
