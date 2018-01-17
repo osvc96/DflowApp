@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
 
 import ai.api.AIListener;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements AIListener{
     private final String CLIENT_ACCESS_TOKEN = "0e9d80a4712e4de48ba4cdf8347d9b72";
     private static final int REQUEST = 200;
     private AIError aiError;
+    private Button loadOfficeMain;
 
 
     @Override
@@ -48,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements AIListener{
         editText = (EditText) findViewById(R.id.editText);
         listenButton = (Button) findViewById(R.id.listenButton);
         readButton = (Button) findViewById(R.id.readButton);
+        loadOfficeMain = (Button) findViewById(R.id.officeMain);
         resultTextView = (TextView) findViewById(R.id.resultTextView);
 
         validateRecordingPermission();
@@ -66,6 +69,11 @@ public class MainActivity extends AppCompatActivity implements AIListener{
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST);
         }
+    }
+
+    public void officeMainButtonOnClick(final View view){
+        Intent myIntent = new Intent(MainActivity.this, OfficeLoad.class);
+        MainActivity.this.startActivity(myIntent);
     }
 
     public void voiceButtonOnClick(final View view){
