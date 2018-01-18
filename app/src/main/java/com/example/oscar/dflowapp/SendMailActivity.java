@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import ai.api.AIListener;
 import ai.api.AIServiceException;
 import ai.api.android.AIConfiguration;
 import ai.api.android.AIDataService;
@@ -39,7 +40,7 @@ import java.util.Map;
  * The app must be connected to Office 365 before this activity can send an email.
  * It also uses the MSGraphAPIController to send the message.
  */
-public class SendMailActivity extends AppCompatActivity {
+public class SendMailActivity extends AppCompatActivity implements AIListener {
 
     // arguments for this activity
     public static final String ARG_GIVEN_NAME = "givenName";
@@ -84,7 +85,7 @@ public class SendMailActivity extends AppCompatActivity {
         aiDataService = new AIDataService(this, config);
 
         aiService = AIService.getService(this, config);
-        //aiService.setListener(this);
+        aiService.setListener(this);
     }
 
     /**
@@ -126,6 +127,10 @@ public class SendMailActivity extends AppCompatActivity {
           }
       }.execute(aiRequest);
 
+    }
+
+    public void voiceRequestClick(final View view){
+        aiService.startListening();
     }
 
     public void sendEmail() {
@@ -226,11 +231,17 @@ public class SendMailActivity extends AppCompatActivity {
         if (!res.isActionIncomplete() && !res.getAction().equals("input.unknown")){
             sendEmail();
         }else{
-            mDescriptionTextView.setVisibility(View.GONE);
-            mSendMailProgressBar.setVisibility(View.GONE);
-            mConclusionTextView.setVisibility(View.VISIBLE);
-            mConclusionTextView.setText(message);
-            mVoiceButton.setVisibility(View.VISIBLE);
+            if (res.getAction().equals("sendEmail")){
+                sendEmail();
+                Toast.makeText(this, "email sent!", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                mDescriptionTextView.setVisibility(View.GONE);
+                mSendMailProgressBar.setVisibility(View.GONE);
+                mConclusionTextView.setVisibility(View.VISIBLE);
+                mConclusionTextView.setText(message);
+                mVoiceButton.setVisibility(View.VISIBLE);
+            }
         }
 
     }
@@ -241,6 +252,26 @@ public class SendMailActivity extends AppCompatActivity {
         mConclusionTextView.setVisibility(View.VISIBLE);
         mConclusionTextView.setText(error.toString());
         mVoiceButton.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onAudioLevel(float level) {
+
+    }
+
+    @Override
+    public void onListeningStarted() {
+
+    }
+
+    @Override
+    public void onListeningCanceled() {
+
+    }
+
+    @Override
+    public void onListeningFinished() {
+
     }
 
 

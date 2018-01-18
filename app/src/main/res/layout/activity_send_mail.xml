@@ -45,7 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/emailEditText"
         android:layout_centerHorizontal="true"
-        android:onClick="onVoiceButtonClick"
+        android:onClick="voiceRequestClick"
         android:src="@drawable/voice_icon"
         android:visibility="visible" />
 
@@ -68,6 +68,16 @@
         android:text="@string/conclusion_text"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:visibility="gone" />
+
+    <Button
+        android:id="@+id/textButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/voiceButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="14dp"
+        android:onClick="onVoiceButtonClick"
+        android:text="Use Text" />
 
 </RelativeLayout>
 

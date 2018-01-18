@@ -26,7 +26,7 @@
     <string name="send_mail_toast_text_error">Error sending email\nCheck logcat for details</string>
     <string name="warning_clientid_redirecturi_incorrect">The client ID or redirect URI is not valid. Enter a valid client ID and redirect URI in the Constants.java file and run again</string>
 
-    <string name="destination">juan.guerrero@avantica.net</string>
+    <string name="destination">oscar.vega@avantica.net</string>
 
     <!-- Email text -->
     <string name="mail_subject_text">Welcome to Microsoft Graph development on Android with the Connect sample</string>
