@@ -21,17 +21,26 @@ import ai.api.model.AIError;
 import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
 import ai.api.model.Result;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.api.client.auth.openidconnect.IdToken;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.gson.JsonElement;
 
+import java.io.IOException;
+import java.net.URI;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements AIListener, OnInitListener{
 
@@ -48,14 +57,17 @@ public class MainActivity extends AppCompatActivity implements AIListener, OnIni
 
     private TextToSpeech tts;
 
+    private static final String TAG = "OfficeLoad";
+    private String ARG_GIVEN_NAME = "Asd";
+    private String ARG_DISPLAY_ID;
+    private String mail_destination = "oscar.vega@avantica.net";
+
     @Override
     protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         editText = (EditText) findViewById(R.id.editText);
-        listenButton = (Button) findViewById(R.id.listenButton);
-        readButton = (Button) findViewById(R.id.readButton);
         loadOfficeMain = (Button) findViewById(R.id.officeMain);
         resultTextView = (TextView) findViewById(R.id.resultTextView);
 
@@ -118,11 +130,6 @@ public class MainActivity extends AppCompatActivity implements AIListener, OnIni
         aiRequest.setQuery(query);
         sendRequestToDialogflow.execute(aiRequest);
     }
-
-    public void voiceButtonOnClick(final View view){
-        aiService.startListening();
-    }
-
     @Override
     public void onResult(AIResponse result) {
         Result res = result.getResult();
@@ -141,6 +148,10 @@ public class MainActivity extends AppCompatActivity implements AIListener, OnIni
         // Show results in TextView.
         resultTextView.setText(message);
         speakOut(res.getFulfillment().getSpeech());
+        if (res.getAction().equals("sendEmail")){
+            connectAndSendEmail();
+        }
+
     }
 
     @Override
@@ -187,4 +198,101 @@ public class MainActivity extends AppCompatActivity implements AIListener, OnIni
         tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
     }
 
+    private static boolean hasAzureConfiguration() {
+        try {
+            UUID.fromString(Constants.CLIENT_ID);
+            URI.create(Constants.REDIRECT_URI);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    private void connectAndSendEmail(){
+        if (!hasAzureConfiguration()) {
+            Toast.makeText(
+                    this,
+                    getString(R.string.warning_clientid_redirecturi_incorrect),
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+        connect();
+
+        //sendEmail();
+    }
+
+    private void connect() {
+        // define the post-auth callback
+        AuthenticationCallback<String> callback =
+                new AuthenticationCallback<String>() {
+
+                    @Override
+                    public void onSuccess(String idToken) {
+                        String name = "";
+                        String preferredUsername = "";
+                        try {
+                            // get the user info from the id token
+                            IdToken claims = IdToken.parse(new GsonFactory(), idToken);
+                            name = claims.getPayload().get("name").toString();
+                            preferredUsername = claims.getPayload().get("preferred_username").toString();
+                        } catch (IOException ioe) {
+                            Log.e(TAG, ioe.getMessage());
+                        } catch (NullPointerException npe) {
+                            Log.e(TAG, npe.getMessage());
+
+                        }
+                        ARG_GIVEN_NAME = name;
+                        ARG_DISPLAY_ID = preferredUsername;
+                    }
+
+                    @Override
+                    public void onError(Exception exc) {
+                        Toast.makeText(
+                                MainActivity.this,
+                                R.string.connect_toast_text_error,
+                                Toast.LENGTH_LONG).show();
+                    }
+                };
+
+        AuthenticationManager mgr = AuthenticationManager.getInstance(this);
+        mgr.connect(this, callback);
+        sendEmail();
+    }
+
+    private void sendEmail(){
+        String body = getString(R.string.mail_body_text);
+        Log.e("BODY:", body);
+        body = body.replace("{0}", ARG_GIVEN_NAME);
+
+        Call<Void> result = new MSGraphAPIController(this).sendMail(mail_destination,
+                getString(R.string.mail_subject_text),
+                body);
+
+        result.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if(response.isSuccessful()) {
+                    Toast.makeText(
+                            MainActivity.this,
+                            R.string.send_mail_toast_text,
+                            Toast.LENGTH_SHORT).show();
+                    speakOut("email sent!");
+                } else {
+                    Toast.makeText(
+                            MainActivity.this,
+                            R.string.send_mail_toast_text_error,
+                            Toast.LENGTH_LONG).show();
+                    speakOut("error sending email");
+                }
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                Toast.makeText(
+                        MainActivity.this,
+                        R.string.send_mail_toast_text_error,
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 }

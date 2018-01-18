@@ -3,10 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://C:\Dev\Android\DflowApp-master\DflowAPP.iml" filepath="C:\Dev\Android\DflowApp-master\DflowAPP.iml" />
-      <module fileurl="file://$PROJECT_DIR$/DflowApp.iml" filepath="$PROJECT_DIR$/DflowApp.iml" />
+      <module fileurl="file://C:\Dev\Android\DflowApp-master\DflowApp.iml" filepath="C:\Dev\Android\DflowApp-master\DflowApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/DflowApp-master.iml" filepath="$PROJECT_DIR$/DflowApp-master.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:\Dev\Android\DflowApp-master\app\app.iml" filepath="C:\Dev\Android\DflowApp-master\app\app.iml" />
       <module fileurl="file://$PROJECT_DIR$/oidclib/oidclib.iml" filepath="$PROJECT_DIR$/oidclib/oidclib.iml" />
     </modules>
   </component>
