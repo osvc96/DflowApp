@@ -40,13 +40,13 @@
         android:visibility="visible" />
 
     <ImageButton
-        android:id="@+id/sendMailButton"
+        android:id="@+id/voiceButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/emailEditText"
         android:layout_centerHorizontal="true"
-        android:onClick="onSendMailButtonClick"
-        android:src="@drawable/mail_icon"
+        android:onClick="onVoiceButtonClick"
+        android:src="@drawable/voice_icon"
         android:visibility="visible" />
 
     <ProgressBar
@@ -61,8 +61,10 @@
         android:id="@+id/conclusionTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/sendMailButton"
-        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/voiceButton"
+        android:layout_marginBottom="283dp"
+        android:layout_marginEnd="45dp"
+        android:layout_marginRight="45dp"
         android:text="@string/conclusion_text"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:visibility="gone" />
