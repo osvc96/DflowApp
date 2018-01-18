@@ -223,8 +223,14 @@ public class SendMailActivity extends AppCompatActivity {
                 "\nSpeech: " + res.getFulfillment().getSpeech();
         // Show results in TextView.
         //mDescriptionTextView.setText(message);
-        if (!res.isActionIncomplete()){
+        if (!res.isActionIncomplete() && !res.getAction().equals("input.unknown")){
             sendEmail();
+        }else{
+            mDescriptionTextView.setVisibility(View.GONE);
+            mSendMailProgressBar.setVisibility(View.GONE);
+            mConclusionTextView.setVisibility(View.VISIBLE);
+            mConclusionTextView.setText(message);
+            mVoiceButton.setVisibility(View.VISIBLE);
         }
 
     }
@@ -232,7 +238,6 @@ public class SendMailActivity extends AppCompatActivity {
     public void onError(AIError error) {
         mDescriptionTextView.setVisibility(View.GONE);
         mSendMailProgressBar.setVisibility(View.GONE);
-        mConclusionTextView.setText(R.string.sendmail_text_error);
         mConclusionTextView.setVisibility(View.VISIBLE);
         mConclusionTextView.setText(error.toString());
         mVoiceButton.setVisibility(View.VISIBLE);
