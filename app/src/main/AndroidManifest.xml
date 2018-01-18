@@ -41,7 +41,7 @@
         </activity>
 
         <activity
-            android:name="com.lnikkila.oidc.authenticator.OIDCClientConfigurationActivity" >
+            android:name="com.lnikkila.oidc.authenticator.OIDCClientConfigurationActivity" >g
         </activity>
 
         <service android:name="com.lnikkila.oidc.authenticator.AuthenticatorService">
